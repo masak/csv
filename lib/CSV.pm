@@ -1,10 +1,13 @@
 class CSV {
     sub parse-quotes($_ is copy) {
-        when /^\' (.*) \'$/ {
+        if $_ ~~ /^\' (.*) \'$/ {
             $_ = ~$0;
         }
-        when /^\" (.*) \"$/ {
+        if $_ ~~ /^\" (.*) \"$/ {
             $_ = ~$0;
+        }
+        if $_ ~~ /<!before \\>[\\\\]*\'/ {
+            die "Cannot have unquoted single quotes in value";
         }
         return $_;
     }
