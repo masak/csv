@@ -7,7 +7,10 @@ class CSV {
             $_ = ~$0;
         }
         if $_ ~~ /<!before \\>[\\\\]*\'/ {
-            die "Cannot have unquoted single quotes in value";
+            die "Cannot have unquoted single quotes in value: ", $_;
+        }
+        if $_ ~~ /<!before \\>[\\\\]*\"/ {
+            die "Cannot have unquoted double quotes in value: ", $_;
         }
         return $_;
     }
