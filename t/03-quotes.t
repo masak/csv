@@ -11,6 +11,10 @@ ok_becomes q[[[foo,bar,baz
 'foo','bar','baz'
 'foo','bar' , 'baz']]], [ [<foo bar baz>] xx 3 ], 'single quotes';
 
+ok_becomes q[[[foo,bar,baz
+"foo","bar","baz"
+"foo","bar" , "baz"]]], [ [<foo bar baz>] xx 3 ], 'double quotes';
+
 done_testing;
 
 # vim:ft=perl6
