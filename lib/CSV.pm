@@ -1,5 +1,9 @@
 class CSV {
     method read($input) {
-        return $input.split("\n");
+        my @lines = $input.split("\n");
+        if @lines[*-1] ~~ /^ \s* $/ {
+            @lines.pop;
+        }
+        return @lines;
     }
 }
