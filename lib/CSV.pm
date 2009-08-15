@@ -1,18 +1,25 @@
+grammar CSV::Line {
+    rule TOP { ^ <value> ** ',' $ }
+    rule value {
+        | <pure_text>
+        | \' <single_quote_contents> \'
+        | \" <double_quote_contents> \"
+    }
+    regex single_quote_contents { <pure_text> ** [\"|' '] }
+    regex double_quote_contents { <pure_text> ** [\'|' '] }
+    regex pure_text { <alnum>+ }
+}
+
 class CSV {
-    sub parse-quotes($_ is copy) {
-        if $_ ~~ /^\' (.*) \'$/ {
-            $_ = ~$0;
-        }
-        if $_ ~~ /^\" (.*) \"$/ {
-            $_ = ~$0;
-        }
-        if $_ ~~ /<!before \\>[\\\\]*\'/ {
-            die "Cannot have unquoted single quotes in value: ", $_;
-        }
-        if $_ ~~ /<!before \\>[\\\\]*\"/ {
-            die "Cannot have unquoted double quotes in value: ", $_;
-        }
-        return $_;
+    sub extract_text($m) {
+        return ($m<single_quote_contents>
+                // $m<double_quote_contents>
+                // $m).Str;
+    }
+
+    sub parse_line($line) {
+        CSV::Line.parse($line)
+            or die "Sorry, cannot parse: ", $line;
     }
 
     method read($input) {
@@ -20,6 +27,8 @@ class CSV {
         if @lines[*-1] ~~ /^ \s* $/ {
             @lines.pop;
         }
-        return map { [map { parse-quotes(.trim) }, .split(/','/)] }, @lines;
+        return map {
+            [map { extract_text($_) }, parse_line($_)<value>]
+        }, @lines;
     }
 }
