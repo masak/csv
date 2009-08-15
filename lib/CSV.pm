@@ -5,9 +5,9 @@ grammar CSV::Line {
         | \' <single_quote_contents> \'
         | \" <double_quote_contents> \"
     }
-    regex single_quote_contents { <pure_text> ** [\"|' '] }
-    regex double_quote_contents { <pure_text> ** [\'|' '] }
-    regex pure_text { <alnum>+ }
+    regex single_quote_contents { <pure_text> ** [ <[",]> | \h ] }
+    regex double_quote_contents { <pure_text> ** [ <[',]> | \h ] }
+    regex pure_text { [<!before <['",]>> \S]+ }
 }
 
 class CSV {
