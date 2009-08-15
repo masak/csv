@@ -4,6 +4,6 @@ class CSV {
         if @lines[*-1] ~~ /^ \s* $/ {
             @lines.pop;
         }
-        return map { [.split(/','/)] }, @lines;
+        return map { [.split(/','/)>>.trim] }, @lines;
     }
 }
