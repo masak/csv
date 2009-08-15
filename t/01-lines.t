@@ -4,7 +4,7 @@ use Test;
 use CSV;
 
 sub ok_becomes($input, $output, $description = '') {
-    is CSV.read($input), $output, $description;
+    is_deeply CSV.read($input), $output, $description;
 }
 
 ok_becomes q[[[foo
