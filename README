@@ -1,0 +1,10 @@
+Simple CSV (comma-separated values) format parser.
+
+  use v6;
+  use CSV;
+
+  say CSV.slurp('somefile.csv').perl;
+
+== License
+
+This module is released under Artistic 2.0. See LICENSE.
