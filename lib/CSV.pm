@@ -31,4 +31,8 @@ class CSV {
             [map { extract_text($_) }, parse_line($_)<value>]
         }, @lines;
     }
+
+    method read-file($filename) {
+        return self.read( slurp($filename) );
+    }
 }
