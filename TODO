@@ -1,0 +1,23 @@
+Some new ideas await tuits:
+
+* According to <http://en.wikipedia.org/wiki/Comma-separated_values>,
+  "In some CSV implementations, leading and trailing spaces or tabs,
+  adjacent to commas, are trimmed. This practice is contentious and in
+  fact is specifically prohibited by RFC 4180, which states, "Spaces are
+  considered part of a field and should not be ignored." Seems a wise
+  course of action is to make spaces and tabs significant by default,
+  but add a 'trim' flag to the class.
+
+* Similarly, make single quotes not quote things by default. Perhaps
+  not even a flag is needed in this case.
+
+* Fields with embedded double-quote characters must be enclosed within
+  double-quote characters, and each of the embedded double-quote
+  characters must be represented by a pair of double-quote characters.
+
+* Fields with embedded line breaks must be enclosed within double-quote
+  characters. Need to support this.
+
+* The first record in a csv file may contain column names in each of
+  the fields. So, the plan is to have a 'header' flag, which treats the
+  first line specially, and makes CSV output an AoH instead of an AoA.
