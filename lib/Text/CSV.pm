@@ -1,4 +1,4 @@
-grammar CSV::Line {
+grammar Text::CSV::Line {
     rule TOP { ^ <value> ** ',' $ }
     rule value {
         | <pure_text>
@@ -10,7 +10,7 @@ grammar CSV::Line {
     regex pure_text { [<!before <['",]>> \S]+ }
 }
 
-class CSV {
+class Text::CSV {
     sub extract_text($m) {
         return ($m<single_quote_contents>
                 // $m<double_quote_contents>
@@ -18,7 +18,7 @@ class CSV {
     }
 
     sub parse_line($line) {
-        CSV::Line.parse($line)
+        Text::CSV::Line.parse($line)
             or die "Sorry, cannot parse: ", $line;
     }
 

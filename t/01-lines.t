@@ -1,10 +1,10 @@
 use v6;
 use Test;
 
-use CSV;
+use Text::CSV;
 
 sub ok_becomes($input, $output, $description = '') {
-    is_deeply CSV.read($input), $output, $description;
+    is_deeply Text::CSV.read($input), $output, $description;
 }
 
 ok_becomes q[[[foo
