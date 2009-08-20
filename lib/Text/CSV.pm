@@ -1,13 +1,13 @@
 grammar Text::CSV::Line {
-    rule TOP { ^ <value> ** ',' $ }
-    rule value {
+    regex TOP { ^ <value> ** ',' $ }
+    regex value {
         | <pure_text>
-        | \' <single_quote_contents> \'
-        | \" <double_quote_contents> \"
+        | \s* \' <single_quote_contents> \' \s*
+        | \s* \" <double_quote_contents> \" \s*
     }
     regex single_quote_contents { <pure_text> ** [ <[",]> | \h ] }
     regex double_quote_contents { <pure_text> ** [ <[',]> | \h ] }
-    regex pure_text { [<!before <['",]>> \S]+ }
+    regex pure_text { [<!before <['",]>> .]+ }
 }
 
 class Text::CSV {
