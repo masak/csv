@@ -11,10 +11,11 @@ grammar Text::CSV::Line {
 }
 
 class Text::CSV {
-    sub extract_text($m) {
-        return ($m<single_quote_contents>
-                // $m<double_quote_contents>
-                // $m).Str;
+    sub extract_text($m, :$trim) {
+        my $text = ($m<single_quote_contents>
+                    // $m<double_quote_contents>
+                    // $m).Str;
+        return $trim ?? $text.trim !! $text;
     }
 
     sub parse_line($line) {
@@ -22,17 +23,17 @@ class Text::CSV {
             or die "Sorry, cannot parse: ", $line;
     }
 
-    method read($input) {
+    method read($input, :$trim) {
         my @lines = $input.split("\n");
         if @lines[*-1] ~~ /^ \s* $/ {
             @lines.pop;
         }
         return map {
-            [map { extract_text($_) }, parse_line($_)<value>]
+            [map { extract_text($_, :$trim) }, parse_line($_)<value>]
         }, @lines;
     }
 
-    method read-file($filename) {
-        return self.read( slurp($filename) );
+    method read-file($filename, *%_) {
+        return self.read( slurp($filename), |%_ );
     }
 }

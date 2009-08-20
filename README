@@ -1,9 +1,14 @@
 Simple CSV (comma-separated values) format parser for Perl 6.
 
   use v6;
-  use CSV;
+  use Text::CSV;
 
-  say CSV.read-file('somefile.csv').perl;
+  say Text::CSV.read-file('somefile.csv').perl;
+  say Text::CSV.read("foo,bar\nbaz,boo").perl;
+
+Oh, and the C<read> methods take this flag:
+
+    :trim   Removes whitespace on both ends of each value
 
 == License
 
