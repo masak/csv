@@ -27,6 +27,13 @@ dies_ok { Text::CSV.read(q[[[foo,ba"r,ba"z]]]) },
 is +Text::CSV.read(q[[[foo,'bar,baz']]])[0], 3, 'cannot single-quote commas';
 is +Text::CSV.read(q[[[foo,"bar,baz"]]])[0], 2, 'can double-quote commas';
 
+dies_ok { Text::CSV.read(q[[["foo"oo"]]]) },
+        'non-duplicated double quotes in double-quoted strings illegal';
+lives_ok { Text::CSV.read(q[[["foo""oo"]]]) },
+         'duplicated double quotes in double-quoted strings legal';
+
+ok_becomes q[[[foo,"bar","ba""z"]]], [ [<foo bar ba"z>] ], 'quote escaping';
+
 done_testing;
 
 # vim:ft=perl6

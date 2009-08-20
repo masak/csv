@@ -4,13 +4,13 @@ grammar Text::CSV::Line {
         | <pure_text>
         | \s* \" <quoted_contents> \" \s*
     }
-    regex quoted_contents { <pure_text> ** [ <[,]> | \h ] }
+    regex quoted_contents { <pure_text> ** [ <[,]> | \h | '""' ] }
     regex pure_text { [<!before <[",]>> .]+ }
 }
 
 class Text::CSV {
     sub extract_text($m, :$trim) {
-        my $text = ($m<quoted_contents> // $m).Str;
+        my $text = ($m<quoted_contents> // $m).subst('""', '"', :global);
         return $trim ?? $text.trim !! $text;
     }
 
