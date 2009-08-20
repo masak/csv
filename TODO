@@ -10,3 +10,14 @@ Some new ideas await tuits:
 * The first record in a csv file may contain column names in each of
   the fields. So, the plan is to have a 'header' flag, which treats the
   first line specially, and makes CSV output an AoH instead of an AoA.
+
+* Ooh, scratch the above idea, and make :header a more general :output
+  named param, where :output<hash> corresponds to the AoH idea. Then,
+  :output(SomeType) can create an AoO instead, each row corresponding to
+  one SomeType instantiation.
+
+* While we're at it, there could be a :strict flag that's off by default
+  in the :output<array> (default) case, but on for :output<hash> and
+  :output(SomeType). If it's turned off, keys will be missing (if there
+  are too few columns) or dropped (if there are too many), but hey, that's
+  what the user asked for.
