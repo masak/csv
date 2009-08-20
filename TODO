@@ -1,8 +1,5 @@
 Some new ideas await tuits:
 
-* Similarly, make single quotes not quote things by default. Perhaps
-  not even a flag is needed in this case.
-
 * Fields with embedded double-quote characters must be enclosed within
   double-quote characters, and each of the embedded double-quote
   characters must be represented by a pair of double-quote characters.

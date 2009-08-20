@@ -2,19 +2,15 @@ grammar Text::CSV::Line {
     regex TOP { ^ <value> ** ',' $ }
     regex value {
         | <pure_text>
-        | \s* \' <single_quote_contents> \' \s*
-        | \s* \" <double_quote_contents> \" \s*
+        | \s* \" <quoted_contents> \" \s*
     }
-    regex single_quote_contents { <pure_text> ** [ <[",]> | \h ] }
-    regex double_quote_contents { <pure_text> ** [ <[',]> | \h ] }
-    regex pure_text { [<!before <['",]>> .]+ }
+    regex quoted_contents { <pure_text> ** [ <[,]> | \h ] }
+    regex pure_text { [<!before <[",]>> .]+ }
 }
 
 class Text::CSV {
     sub extract_text($m, :$trim) {
-        my $text = ($m<single_quote_contents>
-                    // $m<double_quote_contents>
-                    // $m).Str;
+        my $text = ($m<quoted_contents> // $m).Str;
         return $trim ?? $text.trim !! $text;
     }
 
