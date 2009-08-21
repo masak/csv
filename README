@@ -8,7 +8,10 @@ Simple CSV (comma-separated values) format parser for Perl 6.
 
 Oh, and the C<read> methods take this flag:
 
-    :trim   Removes whitespace on both ends of each value
+    :trim     Removes whitespace on both ends of each value.
+
+    :output   Determines the shape of the returned data structure.
+              Allowed values are 'arrays' and 'hashes'.
 
 == License
 

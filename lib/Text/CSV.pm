@@ -16,13 +16,21 @@ class Text::CSV {
         return $trim ?? $text.trim !! $text;
     }
 
-    method read($input, :$trim) {
+    method read($input, :$trim, :$output = 'arrays') {
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
-        return map {
+        my @values = map {
             [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
+        if $output.lc eq 'hashes' {
+            my @header = @values.shift.list;
+            @values = map -> @line {
+                my %hash = map {; @header[$_] => @line[$_] }, ^@line;
+                \%hash
+            }, @values;
+        }
+        return @values;
     }
 
     method read-file($filename, *%_) {
