@@ -41,6 +41,27 @@ is_deeply Text::CSV.read($input, :output<hashes>, :skip-header),
           @AoH,
           'with :output<hashes>, turning :skip-header on is a no-op';
 
+class Sentence {
+    has Str $.subject;
+    has Str $.predicate;
+    has Str $.object;
+}
+
+my @AoO =
+    Sentence.new( :subject<dog>,    :predicate<bites>,    :object<man>       ),
+    Sentence.new( :subject<child>,  :predicate<gets>,     :object<cake>      ),
+    Sentence.new( :subject<arthur>, :predicate<extracts>, :object<excalibur> );
+
+my @result = Text::CSV.read($input, :output(Sentence));
+
+for @AoO.kv -> $index, $expected {
+    my $got = @result[$index];
+    ok $got ~~ Sentence, "got a Sentence $index";
+    is $got.subject,   $expected.subject,   "the right subject   $index";
+    is $got.predicate, $expected.predicate, "the right predicate $index";
+    is $got.object,    $expected.object,    "the right object    $index";
+}
+
 done_testing;
 
 # vim:ft=perl6

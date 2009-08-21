@@ -35,6 +35,14 @@ class Text::CSV {
                 @values.shift;
             }
         }
+        else {
+            my $type = $output;
+            my @header = @values.shift.list;
+            @values = map -> @line {
+                my %attrs = map {; @header[$_] => @line[$_] }, ^@line;
+                $type.new( |%attrs );
+            }, @values;
+        }
         return @values;
     }
 
