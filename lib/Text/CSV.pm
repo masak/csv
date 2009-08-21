@@ -43,7 +43,8 @@ class Text::CSV {
         if $output.lc eq 'hashes' {
             my @header = @values.shift.list;
             @values = map -> @line {
-                my %hash = map {; @header[$_] => @line[$_] }, ^@line;
+                my %hash = map {; @header[$_] => @line[$_] },
+                           ^(+@line min +@header);
                 \%hash
             }, @values;
         }
@@ -56,7 +57,8 @@ class Text::CSV {
             my $type = $output;
             my @header = @values.shift.list;
             @values = map -> @line {
-                my %attrs = map {; @header[$_] => @line[$_] }, ^@line;
+                my %attrs = map {; @header[$_] => @line[$_] },
+                            ^(+@line min +@header);
                 $type.new( |%attrs );
             }, @values;
         }

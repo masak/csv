@@ -13,6 +13,23 @@ lives_ok { Text::CSV.read($input) },
 dies_ok { Text::CSV.read($input, :strict) },
         'when strict more is on, varying numbers of fields cause an error';
 
+dies_ok { Text::CSV.read($input, :output<hashes>) },
+        ':output<hashes> turns on :strict by default';
+
+dies_ok { Text::CSV.read($input, :output(Any)) },
+        ':output(Any) turns on :strict by default';
+
+lives_ok { Text::CSV.read($input, :output<hashes>, :!strict) },
+         'default :strict can be turned back off for :output<hashes>';
+
+lives_ok { Text::CSV.read($input, :output(Any), :!strict) },
+         'default :strict can be turned back off for :output(Any)';
+
+is_deeply Text::CSV.read($input, :output<hashes>, :!strict),
+          [ { one => "five", line => "words", four => "in", words => "one" },
+            { one => "only", line => "three", four => "words" } ],
+          'the hashes output under :!strict makes only the necessary pairs';
+
 done_testing;
 
 # vim:ft=perl6

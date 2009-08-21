@@ -1,7 +1,0 @@
-Some new ideas await tuits:
-
-* There could be a :strict flag that's off by default
-  in the :output<array> (default) case, but on for :output<hash> and
-  :output(SomeType). If it's turned off, keys will be missing (if there
-  are too few columns) or dropped (if there are too many), but hey, that's
-  what the user asked for.
