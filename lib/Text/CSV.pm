@@ -1,11 +1,13 @@
-grammar Text::CSV::Line {
-    regex TOP { ^ <value> ** ',' $ }
+grammar Text::CSV::File {
+    regex TOP { ^ <line> ** \n <empty_line>? $ }
+    regex line { <value> ** ',' }
     regex value {
         | <pure_text>
         | \s* \" <quoted_contents> \" \s*
     }
-    regex quoted_contents { <pure_text> ** [ <[,]> | \h | '""' ] }
-    regex pure_text { [<!before <[",]>> .]+ }
+    regex quoted_contents { <pure_text> ** [ <[,]> | \s | '""' ] }
+    regex pure_text { [<!before <[",]>> \N]+ }
+    regex empty_line { \h* \n }
 }
 
 class Text::CSV {
@@ -14,18 +16,12 @@ class Text::CSV {
         return $trim ?? $text.trim !! $text;
     }
 
-    sub parse_line($line) {
-        Text::CSV::Line.parse($line)
-            or die "Sorry, cannot parse: ", $line;
-    }
-
     method read($input, :$trim) {
-        my @lines = $input.split("\n");
-        if @lines[*-1] ~~ /^ \s* $/ {
-            @lines.pop;
-        }
+        Text::CSV::File.parse($input)
+            or die "Sorry, cannot parse";
+        my @lines = $<line>;
         return map {
-            [map { extract_text($_, :$trim) }, parse_line($_)<value>]
+            [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
     }
 

@@ -34,6 +34,10 @@ lives_ok { Text::CSV.read(q[[["foo""oo"]]]) },
 
 ok_becomes q[[[foo,"bar","ba""z"]]], [ [<foo bar ba"z>] ], 'quote escaping';
 
+ok_becomes q[[[foo,"ba
+r","baz"]]], [ ['foo', 'ba
+r', 'baz'] ], 'newlines are allowed inside quotes';
+
 done_testing;
 
 # vim:ft=perl6

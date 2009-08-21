@@ -1,8 +1,5 @@
 Some new ideas await tuits:
 
-* Fields with embedded line breaks must be enclosed within double-quote
-  characters. Need to support this.
-
 * The first record in a csv file may contain column names in each of
   the fields. So, the plan is to have a 'header' flag, which treats the
   first line specially, and makes CSV output an AoH instead of an AoA.
