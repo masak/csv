@@ -16,7 +16,7 @@ class Text::CSV {
         return $trim ?? $text.trim !! $text;
     }
 
-    method read($input, :$trim, :$output = 'arrays') {
+    method read($input, :$trim, :$output = 'arrays', :$skip-header) {
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
@@ -29,6 +29,11 @@ class Text::CSV {
                 my %hash = map {; @header[$_] => @line[$_] }, ^@line;
                 \%hash
             }, @values;
+        }
+        elsif $output.lc eq 'arrays' {
+            if $skip-header {
+                @values.shift;
+            }
         }
         return @values;
     }

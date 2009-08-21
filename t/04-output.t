@@ -22,6 +22,12 @@ is_deeply Text::CSV.read($input, :output<arrays>),
             [<arthur extracts excalibur>] ],
           'with :output<arrays>, an AoA is returned, header included';
 
+is_deeply Text::CSV.read($input, :skip-header),
+          [ [<dog bites man>],
+            [<child gets cake>],
+            [<arthur extracts excalibur>] ],
+          'with :skip-header, the first line is left out';
+
 is_deeply Text::CSV.read($input, :output<hashes>),
           [ { :subject<dog>,    :predicate<bites>,    :object<man>       },
             { :subject<child>,  :predicate<gets>,     :object<cake>      },
