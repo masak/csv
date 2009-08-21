@@ -6,11 +6,14 @@ Simple CSV (comma-separated values) format parser for Perl 6.
   say Text::CSV.read-file('somefile.csv').perl;
   say Text::CSV.read("foo,bar\nbaz,boo").perl;
 
-Oh, and the C<read> methods take this flag:
+Oh, and the C<read> methods take the following named parameters:
 
     :trim        Removes whitespace on both ends of each value.
 
     :skip-header Causes the first line not to be included in the output.
+
+    :strict      Throws an error if a row has a different number of columns
+                 than the previous ones.
 
     :output      Determines the shape of the returned data structure.
                  Allowed values are 'arrays' (the default), 'hashes',

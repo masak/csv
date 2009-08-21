@@ -16,13 +16,30 @@ class Text::CSV {
         return $trim ?? $text.trim !! $text;
     }
 
-    method read($input, :$trim, :$output = 'arrays', :$skip-header) {
+    method read($input, :$trim, :$output = 'arrays', :$skip-header,
+                        :$strict is copy = 'default') {
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
             [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
+        if $strict eq 'default' {
+            $strict = $output.lc ne 'arrays';
+        }
+        if $strict {
+            my $expected-columns = @values[0].elems;
+            for ^@values -> $line {
+                if (my $c = @values[$line]) > $expected-columns {
+                    die "Too many columns ($c, expected $expected-columns) "
+                        ~ "on line $line";
+                }
+                elsif $c < $expected-columns {
+                    die "Too few columns ($c, expected $expected-columns) "
+                        ~ "on line $line";
+                }
+            }
+        }
         if $output.lc eq 'hashes' {
             my @header = @values.shift.list;
             @values = map -> @line {
