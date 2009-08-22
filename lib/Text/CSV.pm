@@ -26,8 +26,8 @@ class Text::CSV {
         return $trim ?? $text.trim !! $text;
     }
 
-    method read($input, :$trim is copy, :$strict is copy,
-                        :$skip-header is copy, :$output is copy) {
+    method parse($input, :$trim is copy, :$strict is copy,
+                         :$skip-header is copy, :$output is copy) {
 
         if self.defined {
             $trim        //= $!trim        // $trim-default;
@@ -93,7 +93,7 @@ class Text::CSV {
         return @values;
     }
 
-    method read-file($filename, *%_) {
-        return self.read( slurp($filename), |%_ );
+    method parse-file($filename, *%_) {
+        return self.parse( slurp($filename), |%_ );
     }
 }

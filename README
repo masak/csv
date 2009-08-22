@@ -3,10 +3,10 @@ Simple CSV (comma-separated values) format parser for Perl 6.
   use v6;
   use Text::CSV;
 
-  say Text::CSV.read-file('somefile.csv').perl;
-  say Text::CSV.read("foo,bar\nbaz,boo").perl;
+  say Text::CSV.parse-file('somefile.csv').perl;
+  say Text::CSV.parse("foo,bar\nbaz,boo").perl;
 
-Oh, and the C<read> methods take the following named parameters:
+Oh, and the C<parse> methods take the following named parameters:
 
     :trim        Removes whitespace on both ends of each value.
 
@@ -26,8 +26,8 @@ If you see yourself regularly contravening the defaults of one or more of
 these parameters, it might be a good idea to instantiate the Text::CSV
 class, giving it the default values you want:
 
-  my $reader = Text::CSV.new( :output<hashes>, :!strict );
-  my Hash[Str] @hashes = $reader.read-file('somefile.csv');
+  my $parser = Text::CSV.new( :output<hashes>, :!strict );
+  my Hash[Str] @hashes = $parser.parse-file('somefile.csv');
 
 == License
 

@@ -3,7 +3,7 @@ use Test;
 
 use Text::CSV;
 
-is_deeply Text::CSV.read(q[[[foo,bar,baz
+is_deeply Text::CSV.parse(q[[[foo,bar,baz
 foo,bar , baz
 foo,bar  ,  baz]]]),
           [ [<foo bar baz>],
@@ -11,7 +11,7 @@ foo,bar  ,  baz]]]),
             ['foo', 'bar  ', '  baz'] ],
           'spaces are not trimmed by default';
 
-is_deeply Text::CSV.read(q[[[foo,bar,baz
+is_deeply Text::CSV.parse(q[[[foo,bar,baz
 foo,bar , baz
 foo,bar  ,  baz]]], :trim),
           [ [<foo bar baz>] xx 3 ],

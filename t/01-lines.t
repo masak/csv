@@ -4,7 +4,7 @@ use Test;
 use Text::CSV;
 
 sub ok_becomes($input, $output, $description = '') {
-    is_deeply Text::CSV.read($input), $output, $description;
+    is_deeply Text::CSV.parse($input), $output, $description;
 }
 
 ok_becomes q[[[foo
