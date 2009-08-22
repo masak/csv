@@ -1,4 +1,1 @@
-* Make all the flags into attributes of the Text::CSV class, and cause those
-  attributes to work as the defaults to the C<read> methods.
-
 * S26-Pod-document the module.

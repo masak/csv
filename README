@@ -22,6 +22,13 @@ Oh, and the C<read> methods take the following named parameters:
                  is assumed to be a special header line, the values on that
                  line are used as hash keys, and :skip-header is suppressed.
 
+If you see yourself regularly contravening the defaults of one or more of
+these parameters, it might be a good idea to instantiate the Text::CSV
+class, giving it the default values you want:
+
+  my $reader = Text::CSV.new( :output<hashes>, :!strict );
+  my Hash[Str] @hashes = $reader.read-file('somefile.csv');
+
 == License
 
 This module is released under Artistic 2.0. See LICENSE.

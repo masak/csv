@@ -11,13 +11,41 @@ grammar Text::CSV::File {
 }
 
 class Text::CSV {
+    has $!trim;
+    has $!strict;
+    has $!skip-header;
+    has $!output;
+
+    my $trim-default = False;
+    my $strict-default = 'default';
+    my $skip-header-default = False;
+    my $output-default = 'arrays';
+
     sub extract_text($m, :$trim) {
         my $text = ($m<quoted_contents> // $m).subst('""', '"', :global);
         return $trim ?? $text.trim !! $text;
     }
 
-    method read($input, :$trim, :$output = 'arrays', :$skip-header,
-                        :$strict is copy = 'default') {
+    method read($input, :$trim is copy, :$strict is copy,
+                        :$skip-header is copy, :$output is copy) {
+
+        if self.defined {
+            $trim        //= $!trim        // $trim-default;
+            $strict      //= $!strict      // $strict-default;
+            $skip-header //= $!skip-header // $skip-header-default;
+            if $output ~~ Failure {
+                $output    = $!output      // $output-default
+            }
+        }
+        else {
+            $trim        //= $trim-default;
+            $strict      //= $strict-default;
+            $skip-header //= $skip-header-default;
+            if $output ~~ Failure {
+                $output    = $output-default;
+            }
+        }
+
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
