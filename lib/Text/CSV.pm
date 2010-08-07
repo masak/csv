@@ -33,7 +33,7 @@ class Text::CSV {
             $trim        //= $!trim        // $trim-default;
             $strict      //= $!strict      // $strict-default;
             $skip-header //= $!skip-header // $skip-header-default;
-            if $output ~~ Failure {
+            if $output ~~ Any {
                 $output    = $!output      // $output-default
             }
         }
@@ -41,7 +41,7 @@ class Text::CSV {
             $trim        //= $trim-default;
             $strict      //= $strict-default;
             $skip-header //= $skip-header-default;
-            if $output ~~ Failure {
+            if $output ~~ Any {
                 $output    = $output-default;
             }
         }
@@ -50,7 +50,7 @@ class Text::CSV {
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
-            [map { extract_text($_, :$trim) }, .<value>]
+            [map { extract_text(~$_, :$trim) }, .<value>]
         }, @lines;
         if $strict eq 'default' {
             $strict = $output.lc ne 'arrays';
