@@ -23,7 +23,7 @@ class Text::CSV {
 
     sub extract_text($m, :$trim) {
         my $text = ($m<quoted_contents> // $m).subst('""', '"', :global);
-        return $trim ?? $text.trim !! $text;
+        return $trim ?? $text.trim !! ~$text;
     }
 
     method parse($input, :$trim is copy, :$strict is copy,
@@ -50,7 +50,7 @@ class Text::CSV {
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
-            [map { extract_text(~$_, :$trim) }, .<value>]
+            [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
         if $strict eq 'default' {
             $strict = $output.lc ne 'arrays';
