@@ -21,8 +21,13 @@ is_deeply Text::CSV.parse($input, :output<arrays>),
           @AoA,
           'with :output<arrays>, an AoA is returned, header included';
 
+# RAKUDO: We'd like to just be able to say @AoA[1..*], but that doesn't work
+#         right now. [perl #77078]
+my @last-of-AoA = @AoA;
+shift @last-of-AoA;
+
 is_deeply Text::CSV.parse($input, :skip-header),
-          @AoA[1..^*],
+          @last-of-AoA,
           'with :skip-header, the first line is left out';
 
 my @AoH = { :subject<dog>,    :predicate<bites>,    :object<man>       },
