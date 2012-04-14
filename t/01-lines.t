@@ -16,6 +16,6 @@ bar
 baz
 ]]], [['foo'], ['bar'], ['baz']], 'three lines, no commas, final empty line';
 
-done_testing;
+done;
 
 # vim:ft=perl6

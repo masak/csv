@@ -38,6 +38,6 @@ ok_becomes q[[[foo,"ba
 r","baz"]]], [ ['foo', 'ba
 r', 'baz'] ], 'newlines are allowed inside quotes';
 
-done_testing;
+done;
 
 # vim:ft=perl6

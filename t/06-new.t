@@ -13,6 +13,6 @@ is_deeply $parser.parse($input),
             { one => 'five' } ],
           'the defaults are stored in attributes in the class';
 
-done_testing;
+done;
 
 # vim:ft=perl6
