@@ -30,6 +30,6 @@ is_deeply Text::CSV.parse($input, :output<hashes>, :!strict),
             { one => "only", line => "three", four => "words" } ],
           'the hashes output under :!strict makes only the necessary pairs';
 
-done_testing;
+done;
 
 # vim:ft=perl6

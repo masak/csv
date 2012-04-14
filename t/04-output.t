@@ -67,6 +67,6 @@ for @AoO.kv -> $index, $expected {
     is $got.object,    $expected.object,    "the right object    $index";
 }
 
-done_testing;
+done;
 
 # vim:ft=perl6
