@@ -17,6 +17,6 @@ foo,bar  ,  baz]]], :trim),
           [ [<foo bar baz>] xx 3 ],
           'spaces are trimmed when :trim is passed';
 
-done_testing;
+done;
 
 # vim:ft=perl6
