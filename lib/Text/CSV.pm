@@ -1,20 +1,20 @@
 grammar Text::CSV::File {
-    regex TOP { ^ <line> ** \n <empty_line>? $ }
-    regex line { <value> ** ',' }
+    regex TOP { ^ <line>* % \n <empty_line>? $ }
+    regex line { <value>+ % ',' }
     regex value {
         | <pure_text>
-        | \s* \" <quoted_contents> \" \s*
+        | \h* \" <quoted_contents> \" \h*
     }
-    regex quoted_contents { <pure_text> ** [ <[,]> | \s | '""' ] }
+    regex quoted_contents { <pure_text>+ % [ <[,]> | \s | '""' ] }
     regex pure_text { [<!before <[",]>> \N]+ }
     regex empty_line { \h* \n }
 }
 
 class Text::CSV {
-    has $!trim;
-    has $!strict;
-    has $!skip-header;
-    has $!output;
+    has $.trim;
+    has $.strict;
+    has $.skip-header;
+    has $.output;
 
     my $trim-default = False;
     my $strict-default = 'default';
@@ -27,33 +27,32 @@ class Text::CSV {
     }
 
     method parse($input, :$trim is copy, :$strict is copy,
-                         :$skip-header is copy, :$output is copy) {
+                         :$skip-header is copy, :$output is copy = $output-default) {
 
         if self.defined {
-            $trim        //= $!trim        // $trim-default;
-            $strict      //= $!strict      // $strict-default;
-            $skip-header //= $!skip-header // $skip-header-default;
-            if $output ~~ Any {
-                $output    = $!output      // $output-default
-            }
+            $trim        //= $.trim        // $trim-default;
+            $strict      //= $.strict      // $strict-default;
+            $skip-header //= $.skip-header // $skip-header-default;
+            $output        = $.output      // $output;
         }
         else {
             $trim        //= $trim-default;
             $strict      //= $strict-default;
             $skip-header //= $skip-header-default;
-            if $output ~~ Any {
-                $output    = $output-default;
-            }
         }
 
+        if $output ~~ Str {
+            $output .= lc;
+        }
+        
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
             [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
-        if $strict eq 'default' {
-            $strict = $output.lc ne 'arrays';
+        if $strict ~~ 'default' {
+            $strict = $output !=== 'arrays';
         }
         if $strict {
             my $expected-columns = @values[0].elems;
@@ -68,15 +67,14 @@ class Text::CSV {
                 }
             }
         }
-        if $output.lc eq 'hashes' {
+        if $output === 'hashes' {
             my @header = @values.shift.list;
             @values = map -> @line {
-                my %hash = map {; @header[$_] => @line[$_] },
-                           ^(+@line min +@header);
-                \%hash
+                my %hash = map {@header[$_], @line[$_]}, ^(+@line min +@header);
+                { %hash };
             }, @values;
         }
-        elsif $output.lc eq 'arrays' {
+        elsif $output === 'arrays' {
             if $skip-header {
                 @values.shift;
             }
