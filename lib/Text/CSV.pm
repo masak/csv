@@ -5,7 +5,7 @@ grammar Text::CSV::File {
         | <pure_text>
         | [\s* \"] ~ [\" \s*] <quoted_contents>
     }
-    regex quoted_contents { <pure_text>+ % [ <[,]> | \s | '""' ] }
+    regex quoted_contents { [<pure_text> | <[,]> | \s | '""' ]* }
     regex pure_text { [<!before <[",]>> \N]+ }
     regex empty_line { \h* \n }
 }
