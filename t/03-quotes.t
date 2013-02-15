@@ -32,11 +32,15 @@ dies_ok { Text::CSV.parse(q[[["foo"oo"]]]) },
 lives_ok { Text::CSV.parse(q[[["foo""oo"]]]) },
          'duplicated double quotes in double-quoted strings legal';
 
-ok_becomes q[[[foo,"bar","ba""z"]]], [ [<foo bar ba"z>] ], 'quote escaping';
+ok_becomes q[[[foo,"ba""r","ba""""z"]]], [ [<foo ba"r ba""z>] ], 'quote escaping';
+
+ok_becomes q[[[foo,"""","""baz"""]]], [ [<foo " "baz">] ], 'quote escaping at the boundary';
 
 ok_becomes q[[[foo,"ba
 r","baz"]]], [ ['foo', 'ba
 r', 'baz'] ], 'newlines are allowed inside quotes';
+
+
 
 done;
 
