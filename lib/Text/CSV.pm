@@ -1,11 +1,11 @@
 grammar Text::CSV::File {
-    regex TOP { ^ <line> ** \n <empty_line>? $ }
-    regex line { <value> ** ',' }
+    regex TOP { ^ <line>+ % "\n" <empty_line>? $ }
+    regex line { <value>+ % ',' }
     regex value {
         | <pure_text>
-        | \s* \" <quoted_contents> \" \s*
+        | [\s* \"] ~ [\" \s*] <quoted_contents>
     }
-    regex quoted_contents { <pure_text> ** [ <[,]> | \s | '""' ] }
+    regex quoted_contents { <pure_text>+ % [ <[,]> | \s | '""' ] }
     regex pure_text { [<!before <[",]>> \N]+ }
     regex empty_line { \h* \n }
 }
