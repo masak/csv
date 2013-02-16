@@ -3,7 +3,7 @@ grammar Text::CSV::File {
     regex line { <value>+ % ',' }
     regex value {
         | <pure_text>
-        | [\s* \"] ~ [\" \s*] <quoted_contents>
+        | [\h* \"] ~ [\" \h*] <quoted_contents>
     }
     regex quoted_contents { [<pure_text> | <[,]> | \s | '""' ]* }
     regex pure_text { [<!before <[",]>> \N]+ }
@@ -11,10 +11,10 @@ grammar Text::CSV::File {
 }
 
 class Text::CSV {
-    has $!trim;
-    has $!strict;
-    has $!skip-header;
-    has $!output;
+    has $.trim;
+    has $.strict;
+    has $.skip-header;
+    has $.output;
 
     my $trim-default = False;
     my $strict-default = 'default';
@@ -30,11 +30,11 @@ class Text::CSV {
                          :$skip-header is copy, :$output is copy) {
 
         if self.defined {
-            $trim        //= $!trim        // $trim-default;
-            $strict      //= $!strict      // $strict-default;
-            $skip-header //= $!skip-header // $skip-header-default;
+            $trim        //= $.trim        // $trim-default;
+            $strict      //= $.strict      // $strict-default;
+            $skip-header //= $.skip-header // $skip-header-default;
             if $output ~~ Any {
-                $output    = $!output      // $output-default
+                $output    = $.output      // $output-default;
             }
         }
         else {
@@ -71,8 +71,7 @@ class Text::CSV {
         if $output.lc eq 'hashes' {
             my @header = @values.shift.list;
             @values = map -> @line {
-                my %hash = map {; @header[$_] => @line[$_] },
-                           ^(+@line min +@header);
+                my %hash = map { @header[$_] => @line[$_] }, ^(+@line min +@header);
                 \%hash
             }, @values;
         }
