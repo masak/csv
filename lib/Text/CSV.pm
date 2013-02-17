@@ -33,7 +33,7 @@ class Text::CSV {
             $trim        //= $.trim        // $trim-default;
             $strict      //= $.strict      // $strict-default;
             $skip-header //= $.skip-header // $skip-header-default;
-            if $output eqv Any {
+            if $output === Any {
                 $output    = $.output      // $output-default;
             }
         }
@@ -41,7 +41,7 @@ class Text::CSV {
             $trim        //= $trim-default;
             $strict      //= $strict-default;
             $skip-header //= $skip-header-default;
-            if $output eqv Any {
+            if $output === Any {
                 $output    = $output-default;
             }
         }
@@ -56,7 +56,7 @@ class Text::CSV {
             [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
         if $strict eq 'default' {
-            $strict = $output.not || $output !~~ 'arrays';
+            $strict = !$output || $output !~~ 'arrays';
         }
         if $strict {
             my $expected-columns = @values[0].elems;
