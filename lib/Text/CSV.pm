@@ -33,7 +33,7 @@ class Text::CSV {
             $trim        //= $.trim        // $trim-default;
             $strict      //= $.strict      // $strict-default;
             $skip-header //= $.skip-header // $skip-header-default;
-            if $output ~~ Any {
+            if $output eqv Any {
                 $output    = $.output      // $output-default;
             }
         }
@@ -41,10 +41,13 @@ class Text::CSV {
             $trim        //= $trim-default;
             $strict      //= $strict-default;
             $skip-header //= $skip-header-default;
-            if $output ~~ Any {
+            if $output eqv Any {
                 $output    = $output-default;
             }
         }
+        if $output ~~ Str {
+            $output = $output.lc;
+	}
 
         Text::CSV::File.parse($input)
             or die "Sorry, cannot parse";
@@ -53,7 +56,7 @@ class Text::CSV {
             [map { extract_text($_, :$trim) }, .<value>]
         }, @lines;
         if $strict eq 'default' {
-            $strict = $output.lc ne 'arrays';
+            $strict = $output.not || $output !~~ 'arrays';
         }
         if $strict {
             my $expected-columns = @values[0].elems;
@@ -68,14 +71,14 @@ class Text::CSV {
                 }
             }
         }
-        if $output.lc eq 'hashes' {
+        if $output && $output eq 'hashes' {
             my @header = @values.shift.list;
             @values = map -> @line {
                 my %hash = map { @header[$_] => @line[$_] }, ^(+@line min +@header);
                 \%hash
             }, @values;
         }
-        elsif $output.lc eq 'arrays' {
+        elsif $output && $output eq 'arrays' {
             if $skip-header {
                 @values.shift;
             }
