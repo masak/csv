@@ -16,8 +16,8 @@ dies_ok { Text::CSV.parse($input, :strict) },
 dies_ok { Text::CSV.parse($input, :output<hashes>) },
         ':output<hashes> turns on :strict by default';
 
-dies_ok { Text::CSV.parse($input, :output(Any)) },
-        ':output(Any) turns on :strict by default';
+dies_ok { Text::CSV.parse($input, :output(Mu)) },
+        ':output(Mu) turns on :strict by default';
 
 lives_ok { Text::CSV.parse($input, :output<hashes>, :!strict) },
          'default :strict can be turned back off for :output<hashes>';
