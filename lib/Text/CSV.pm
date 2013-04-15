@@ -73,10 +73,13 @@ class Text::CSV {
         }
         if $output && $output eq 'hashes' {
             my @header = @values.shift.list;
-            @values = map -> @line {
+            my @results;
+            my $i = 0;
+            for @values -> @line {
                 my %hash = map { @header[$_] => @line[$_] }, ^(+@line min +@header);
-                \%hash
-            }, @values;
+                @results[$i++] = %hash;
+            }
+            @values = @results;
         }
         elsif $output && $output eq 'arrays' {
             if $skip-header {
