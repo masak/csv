@@ -29,6 +29,38 @@ class, giving it the default values you want:
   my $parser = Text::CSV.new( :output<hashes>, :!strict );
   my Hash[Str] @hashes = $parser.parse-file('somefile.csv');
 
+
+
+Text::CSV also exports a subroutine: C<csv-write-file>, to write CSV data out
+to a file. C<csv-write-file> supports all of the internal CSV representations
+provided by Text::CSV.parse. 
+
+There are two mandatory parameters: a filename, and an array of CSV data in
+one of the configurations provided by the .parse method (Array of Array, Array
+of Hash or Array of Object).
+
+  use v6;
+  use Text::CSV;
+
+  my @csv = Text::CSV.parse-file('somefile.csv');
+  csv-write-file( @csv, :file('/path/to/output.csv') );
+
+There are a few other parameters which may be useful or necessary depending on
+your needs and data.
+
+    :header     An array of strings to use as the first (header) line in the
+                written file. Mandatory for hash or object modes. Optional for
+                Array mode.
+
+    :quote      Uses a character other than double quote for the quoting
+                character.
+
+    :separator  Use a character other than comma for the separator character.
+
+!! Note: that Text::CSV does not at this time support I<parsing> files that 
+use non-standard quoting or separator charactrers. You can easily write a
+"valid" file with csv-write-file that Text::CSV.parse will not parse.
+
 == License
 
 This module is released under Artistic 2.0. See LICENSE.
