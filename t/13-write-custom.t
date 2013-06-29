@@ -12,6 +12,10 @@ my ( $in, $out, $before, $after );
 
     my @csv = Text::CSV.parse-file($in);
 
+    dies_ok { csv-write-file( @csv, :file($out), :quote('')  ) }, 'Dies if tries to use blank quoting character';
+
+    dies_ok { csv-write-file( @csv, :file($out), :quote("''")  ) }, 'Dies if tries to use multi-char quoting character';
+
     csv-write-file(@csv, :file($out), :quote("'") );
 
     $before = slurp './t/Files/single-q.csv';
@@ -27,6 +31,10 @@ my ( $in, $out, $before, $after );
     $after = slurp $out;
 
     is($before, $after, 'Writes file with "@" as quoting character correctly');
+
+    dies_ok { csv-write-file( @csv, :file($out), :separator('')  ) }, 'Dies if tries to use blank separator character';
+
+    dies_ok { csv-write-file( @csv, :file($out), :separator("''")  ) }, 'Dies if tries to use multi-char separator character';
 
     csv-write-file(@csv, :file($out), :separator("\t") );
 

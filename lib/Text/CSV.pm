@@ -103,10 +103,19 @@ class Text::CSV {
     }
 }
 
-our sub csv-write-file (@csv, :$header, :$file, :$separator is copy, :$quote is copy) is export {
+our sub csv-write-file (@csv, :$header, :$file,
+  :$separator is copy, :$quote is copy) is export {
 
     $separator //= ',';
     $quote     //= '"';
+
+    die "Sorry, can not us a new-line as a separator or quoting character"
+      if any($separator, $quote) eq "\n";
+    die "Sorry, only single character separators are supported"
+      if $separator.chars != 1;
+    die "Sorry, only single character quotes are supported"
+      if $quote.chars != 1;
+
     die "Must provide an output file name" unless $file.defined;
 
     my @header = $header.defined ?? @$header !! ();
