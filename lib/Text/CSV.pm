@@ -60,15 +60,11 @@ class Text::CSV {
 
         if $output ~~ Str {
             $output = $output.lc;
-	}
-        die "Sorry, can not use a space as a quoting character"
-          if $quote ~~ /\s/;
-        die "Sorry, can not use a newline as a separator character"
-          if $separator ~~ /\n/;
-        die "Sorry, only single character separators are supported"
-          if $separator.chars != 1;
-        die "Sorry, only single character quotes are supported"
-          if $quote.chars != 1;
+        }
+
+        if my $check = check_ok($quote, $separator) {
+            die $check;
+        }
         
         grammar ThisGrammar is Text::CSV::File {
             regex line { <value>+ % $separator }
@@ -140,14 +136,9 @@ our sub csv-write-file (@csv, :$header, :$file,
     $separator //= ',';
     $quote     //= '"';
 
-    die "Sorry, can not use a space as a quoting character"
-      if $quote ~~ /\s/;
-    die "Sorry, can not use a newline as a separator character"
-      if $separator ~~ /\n/;
-    die "Sorry, only single character separators are supported"
-      if $separator.chars != 1;
-    die "Sorry, only single character quotes are supported"
-      if $quote.chars != 1;
+    if my $check = check_ok($quote, $separator) {
+        die $check;
+    }
 
     die "Must provide an output file name" unless $file.defined;
 
@@ -197,4 +188,17 @@ our sub csv-write-file (@csv, :$header, :$file,
         }
         $str
     }
+}
+
+sub check_ok ($quote, $separator) {
+    return "Sorry, can not use a space as a quoting character"
+      if $quote ~~ /\s/;
+    return "Sorry, can not use a newline as a separator character"
+      if $separator ~~ /\n/;
+    return "Sorry, only single character separators are supported"
+      if $separator.chars != 1;
+    return "Sorry, only single character quotes are supported"
+      if $quote.chars != 1;
+    return "Sorry, you can't use the same character for separator AND quote."
+      if $quote eq $separator;
 }
