@@ -26,6 +26,9 @@ dies_ok { Text::CSV.parse-file( $in, :quote("\n") ) },
 dies_ok { Text::CSV.parse-file( $in, :quote("''") ) },
   'Dies properly if tries to use multi characters for a separator character';
 
+dies_ok { Text::CSV.parse-file( $in, :quote("'"), :seoarator("'") ) },
+  'Dies properly if tries to usethe same characters for both separator and quote character';
+
 is_deeply Text::CSV.parse-file( './t/Files/single-q.csv', :quote("'") ),
     @csv, 'Parsing using custom quote "\'" works correctly';
 
