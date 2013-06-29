@@ -102,3 +102,58 @@ class Text::CSV {
         return self.parse( slurp($filename), |%_ );
     }
 }
+
+our sub csv-write-file (@csv, :$header, :$file, :$separator is copy, :$quote is copy) is export {
+
+    $separator //= ',';
+    $quote     //= '"';
+    die "Must provide an output file name" unless $file.defined;
+
+    my @header = $header.defined ?? @$header !! ();
+
+    my $fh = open($file, :w) or die $!;
+
+    my $first = @csv[0];
+
+    if $first ~~ Array {
+        if @header.elems {
+            $fh.say(join ($separator), map { csv-quote($_) }, @header);
+        } 
+  
+        for @csv -> $line {
+           $fh.say(join ($separator), map { csv-quote($_) }, @$line);
+        }
+    }
+
+    elsif $first ~~ Hash {
+        unless @header.elems {
+            die "Can not guarantee order of columns if no header is provided";
+            # @header = %$first.keys; # Not sure if should die or warn and attempt
+        }
+
+        $fh.say(join ($separator), map { csv-quote($_) }, @header);
+
+        for @csv -> $line {
+           $fh.say(join ($separator), map { csv-quote($_) }, %$line{@header});
+        }
+    }
+
+    else {
+        die "You need to provide an array of accessors" unless @header.elems;
+
+        $fh.say(join ($separator), map { csv-quote($_) }, @header);
+
+        for @csv -> $object {
+           $fh.say(join ($separator), map { csv-quote( $object."$_"() ) }, @header);
+        }
+    };
+
+    close $fh;
+
+    sub csv-quote ($str is copy) {
+        if $str ~~ m/ $quote | $separator | \r | \n / {
+            $str = $quote ~ $str.subst($quote, $quote ~ $quote, :g) ~ $quote;
+        }
+        $str
+    }
+}
