@@ -5,45 +5,50 @@ use Text::CSV;
 
 my ( $in, $out, $before, $after );
 
-{
-    $in = './t/Files/ugly.csv';
 
-    $out = './t/Files/test.csv';
+$in = './t/Files/ugly.csv';
 
-    my @csv = Text::CSV.parse-file($in);
+$out = './t/Files/test.csv';
 
-    dies_ok { csv-write-file( @csv, :file($out), :quote('')  ) }, 'Dies if tries to use blank quoting character';
+my @csv = Text::CSV.parse-file($in);
 
-    dies_ok { csv-write-file( @csv, :file($out), :quote("''")  ) }, 'Dies if tries to use multi-char quoting character';
+dies_ok { csv-write-file( @csv, :file($out), :quote('') ) },
+  'Dies if tries to use blank quoting character';
 
-    csv-write-file(@csv, :file($out), :quote("'") );
+dies_ok { csv-write-file( @csv, :file($out), :quote("''") ) },
+  'Dies if tries to use multi-char quoting character';
 
-    $before = slurp './t/Files/single-q.csv';
+csv-write-file(@csv, :file($out), :quote("'") );
 
-    $after = slurp $out;
+$before = slurp './t/Files/single-q.csv';
 
-    is($before, $after, 'Writes file with single quote as quoting character correctly');
+$after = slurp $out;
 
-    csv-write-file(@csv, :file($out), :quote('@') );
+is($before, $after, 'Writes file with single quote as quoting character correctly');
 
-    $before = slurp './t/Files/at-q.csv';
+csv-write-file(@csv, :file($out), :quote('@') );
 
-    $after = slurp $out;
+$before = slurp './t/Files/at-q.csv';
 
-    is($before, $after, 'Writes file with "@" as quoting character correctly');
+$after = slurp $out;
 
-    dies_ok { csv-write-file( @csv, :file($out), :separator('')  ) }, 'Dies if tries to use blank separator character';
+is($before, $after, 'Writes file with "@" as quoting character correctly');
 
-    dies_ok { csv-write-file( @csv, :file($out), :separator("''")  ) }, 'Dies if tries to use multi-char separator character';
+dies_ok { csv-write-file( @csv, :file($out), :separator('') ) },
+  'Dies if tries to use blank separator character';
 
-    csv-write-file(@csv, :file($out), :separator("\t") );
+dies_ok { csv-write-file( @csv, :file($out), :separator("''") ) },
+  'Dies if tries to use multi-char separator character';
 
-    $before = slurp './t/Files/tab-s.csv';
+csv-write-file(@csv, :file($out), :separator("\t") );
 
-    $after = slurp $out;
+$before = slurp './t/Files/tab-s.csv';
 
-    is($before, $after, 'Writes file with Tab as separator character correctly');
-}
+$after = slurp $out;
+
+is($before, $after, 'Writes file with Tab as separator character correctly');
+
+unlink $out;
 
 done;
 

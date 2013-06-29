@@ -90,6 +90,8 @@ my ( $in, $out, $before, $after );
     is($before, $after, 'Different parameter order yields the same result');
 }
 
+unlink $out;
+
 done;
 
 # vim:ft=perl6

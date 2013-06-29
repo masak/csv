@@ -72,6 +72,8 @@ my ( $in, $out, $before, $after );
     is($before, $after, 'Object output for parse / write with provided header / accessor list on ugly.csv round-trips');
 }
 
+unlink $out;
+
 done;
 
 # vim:ft=perl6

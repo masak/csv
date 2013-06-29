@@ -53,6 +53,8 @@ my ( $in, $out, $before, $after );
     is($before, $after, 'Hash output for parse / write with given header on ugly.csv round-trips');
 }
 
+unlink $out;
+
 done;
 
 # vim:ft=perl6

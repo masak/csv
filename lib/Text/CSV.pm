@@ -15,24 +15,31 @@ class Text::CSV {
     has $.strict;
     has $.skip-header;
     has $.output;
+    has $.quote;
+    has $.separator;
 
-    my $trim-default = False;
-    my $strict-default = 'default';
+    my $trim-default        = False;
+    my $strict-default      = 'default';
     my $skip-header-default = False;
-    my $output-default = 'arrays';
+    my $output-default      = 'arrays';
+    my $quote-default       = '"';
+    my $separator-default   = ',';
 
-    sub extract_text($m, :$trim) {
-        my $text = ($m<quoted_contents> // $m).subst('""', '"', :global);
+    sub extract_text($m, $quote, :$trim) {
+        my $text = ($m<quoted_contents> // $m).subst("$quote$quote", $quote, :global);
         return $trim ?? $text.trim !! ~$text;
     }
 
     method parse($input, :$trim is copy, :$strict is copy,
-                         :$skip-header is copy, :$output is copy) {
+                         :$skip-header is copy, :$output is copy,
+                         :$separator is copy, :$quote is copy) {
 
         if self.defined {
             $trim        //= $.trim        // $trim-default;
             $strict      //= $.strict      // $strict-default;
             $skip-header //= $.skip-header // $skip-header-default;
+            $separator   //= $.separator   // $separator-default;
+            $quote       //= $.quote       // $quote-default;
             if $output === Any {
                 $output    = $.output      // $output-default;
             }
@@ -41,19 +48,43 @@ class Text::CSV {
             $trim        //= $trim-default;
             $strict      //= $strict-default;
             $skip-header //= $skip-header-default;
+            $separator   //= $separator-default;
+            $quote       //= $quote-default;
             if $output === Any {
                 $output    = $output-default;
             }
         }
+        if $output === Any {
+            $output    = $output-default;
+        }
+
         if $output ~~ Str {
             $output = $output.lc;
 	}
+        die "Sorry, can not use a space as a quoting character"
+          if $quote ~~ /\s/;
+        die "Sorry, can not use a newline as a separator character"
+          if $separator ~~ /\n/;
+        die "Sorry, only single character separators are supported"
+          if $separator.chars != 1;
+        die "Sorry, only single character quotes are supported"
+          if $quote.chars != 1;
+        
+        grammar ThisGrammar is Text::CSV::File {
+            regex line { <value>+ % $separator }
+            regex value {
+                | <pure_text>
+                | [\h* $quote] ~ [$quote \h*] <quoted_contents>
+            }
+            regex quoted_contents { [<pure_text> | $separator | \s | $quote$quote ]* }
+            regex pure_text { [<!before [$quote | $separator]> \N]+ } 
+        } #\
 
-        Text::CSV::File.parse($input)
+        ThisGrammar.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
-            [map { extract_text($_, :$trim) }, .<value>]
+            [map { extract_text($_, $quote, :$trim) }, .<value>]
         }, @lines;
         if $strict eq 'default' {
             $strict = !$output || $output !~~ 'arrays';
@@ -104,13 +135,15 @@ class Text::CSV {
 }
 
 our sub csv-write-file (@csv, :$header, :$file,
-  :$separator is copy, :$quote is copy) is export {
+    :$separator is copy, :$quote is copy) is export {
 
     $separator //= ',';
     $quote     //= '"';
 
-    die "Sorry, can not us a new-line as a separator or quoting character"
-      if any($separator, $quote) eq "\n";
+    die "Sorry, can not use a space as a quoting character"
+      if $quote ~~ /\s/;
+    die "Sorry, can not use a newline as a separator character"
+      if $separator ~~ /\n/;
     die "Sorry, only single character separators are supported"
       if $separator.chars != 1;
     die "Sorry, only single character quotes are supported"
@@ -137,7 +170,6 @@ our sub csv-write-file (@csv, :$header, :$file,
     elsif $first ~~ Hash {
         unless @header.elems {
             die "Can not guarantee order of columns if no header is provided";
-            # @header = %$first.keys; # Not sure if should die or warn and attempt
         }
 
         $fh.say(join ($separator), map { csv-quote($_) }, @header);
