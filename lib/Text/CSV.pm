@@ -78,7 +78,7 @@ class Text::CSV {
             }
             regex quoted_contents { [<pure_text> | $separator | \s | $quote$quote ]* }
             regex pure_text { [<!before [$quote | $separator]> \N]+ } 
-        } #\
+        }
 
         ThisGrammar.parse($input)
             or die "Sorry, cannot parse";
@@ -180,7 +180,7 @@ our sub csv-write-file (@csv, :$header, :$file,
     }
 
     else {
-        die "You need to provide an array of accessors" unless @header.elems;
+        die "You need to provide a header array of accessors" unless @header.elems;
 
         $fh.say(join ($separator), map { csv-quote($_) }, @header);
 

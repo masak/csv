@@ -26,7 +26,9 @@ Oh, and the C<parse> methods take the following named parameters:
                  quote '"'. Must be a single, non-space character.
 
     :separator   Use a separator character other than the default of comma ','
-                 Must be a single non new-line character.
+                 Must be a single non new-line character. (Tabs are fine.
+                 Spaces probably aren't a good idea, but... if you want to use
+                 them, knock yourself out.)
 
 If you see yourself regularly contravening the defaults of one or more of
 these parameters, it might be a good idea to instantiate the Text::CSV
@@ -54,14 +56,15 @@ of Hash or Array of Object).
 There are a few other parameters which may be useful or necessary depending on
 your needs and data.
 
-    :header     An array of strings to use as the first (header) line in the
-                written file. Mandatory for hash or object modes. Optional for
-                Array mode.
+    :header     An array of strings. Optional for Array mode. If provided, 
+                written as the first (header) line in the file.
+                Mandatory for hash or object modes. For hashes, the header
+                array is the keys to hash. In object mode, the accessors for
+                the object attributes.
+                
+    :quote      Same rules as for the parser.
 
-    :quote      Uses a character other than double quote for the quoting.
-                character.
-
-    :separator  Use a character other than comma for the separator character.
+    :separator  Same rules as for the parser.
 
 
 == License
