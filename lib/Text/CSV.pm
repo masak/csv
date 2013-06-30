@@ -2,7 +2,7 @@ grammar Text::CSV::File {
     regex TOP { ^ <line>+ % "\n" <empty_line>? $ }
     regex line { <value>+ % ',' }
     regex value {
-        | <pure_text>
+        <pure_text>
         | [\h* \"] ~ [\" \h*] <quoted_contents>
     }
     regex quoted_contents { [<pure_text> | <[,]> | \s | '""' ]* }
@@ -65,18 +65,23 @@ class Text::CSV {
         if my $check = check_ok($quote, $separator) {
             die $check;
         }
-        
-        grammar ThisGrammar is Text::CSV::File {
-            regex line { <value>+ % $separator }
-            regex value {
-                | <pure_text>
-                | [\h* $quote] ~ [$quote \h*] <quoted_contents>
-            }
-            regex quoted_contents { [<pure_text> | $separator | \s | $quote$quote ]* }
-            regex pure_text { [<!before [$quote | $separator]> \N]+ } 
-        }
 
-        ThisGrammar.parse($input)
+        my $parser = Text::CSV::File;
+        if $quote ne $quote-default or $separator ne $separator-default {
+            grammar CustomCSV is Text::CSV::File {
+                regex line { <value>+ % $separator }
+                regex value {
+                    <pure_text> | [\h* $quote] ~ [$quote \h*] <quoted_contents>
+                }
+                regex quoted_contents {
+                    [ <pure_text> | $separator |
+                      \s | $quote$quote ]*
+                }
+                regex pure_text { [<!before [$quote | $separator]> \N]+ }
+            }
+            $parser = CustomCSV;
+        }
+        $parser.parse($input)
             or die "Sorry, cannot parse";
         my @lines = $<line>;
         my @values = map {
@@ -131,10 +136,10 @@ class Text::CSV {
 }
 
 our sub csv-write-file (@csv, :$header, :$file,
-    :$separator is copy, :$quote is copy) is export {
-
-    $separator //= ',';
-    $quote     //= '"';
+    :$separator is copy, :$quote is copy, :$always_quote) is export {
+ 
+	$separator    //= ',';
+    $quote        //= '"';
 
     if my $check = check_ok($quote, $separator) {
         die $check;
@@ -149,7 +154,7 @@ our sub csv-write-file (@csv, :$header, :$file,
     if $first ~~ Array {
         if @header.elems {
             $fh.say(join ($separator), map { csv-quote($_) }, @header);
-        } 
+        }
         for @csv -> $line {
            $fh.say(join ($separator), map { csv-quote($_) }, @$line);
         }
@@ -176,7 +181,8 @@ our sub csv-write-file (@csv, :$header, :$file,
     close $fh;
 
     sub csv-quote ($str is copy) {
-        if $str ~~ m/ $quote | $separator | \r | \n / {
+        $str //= '';
+        if $always_quote or $str ~~ m/ $quote | $separator | \r | \n / {
             $str = $quote ~ $str.subst($quote, $quote ~ $quote, :g) ~ $quote;
         }
         $str
