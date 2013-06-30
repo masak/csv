@@ -54,9 +54,6 @@ class Text::CSV {
                 $output    = $output-default;
             }
         }
-        if $output === Any {
-            $output    = $output-default;
-        }
 
         if $output ~~ Str {
             $output = $output.lc;
@@ -138,7 +135,7 @@ class Text::CSV {
 our sub csv-write-file (@csv, :$header, :$file,
     :$separator is copy, :$quote is copy, :$always_quote) is export {
  
-	$separator    //= ',';
+    $separator    //= ',';
     $quote        //= '"';
 
     if my $check = check_ok($quote, $separator) {
