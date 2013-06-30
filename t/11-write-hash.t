@@ -10,7 +10,7 @@ my ( $in, $out, $before, $after );
     $out = './t/Files/test.csv';
     my @csv = Text::CSV.parse-file($in, output => 'hashes');
     dies_ok { csv-write-file(file => $out, @csv) },
-      'Dies if no header is prvided in hash mode';
+      'Dies if no header is provided in hash mode';
 
 }
 
