@@ -43,7 +43,7 @@ class, giving it the default values you want:
 
 Text::CSV also exports a subroutine: C<csv-write-file>, to write CSV data out
 to a file. C<csv-write-file> supports all of the internal CSV representations
-provided by Text::CSV.parse. 
+provided by Text::CSV.parse.
 
 There are two mandatory parameters: a filename, and an array of CSV data in
 one of the configurations provided by the .parse method (Array of Array, Array
@@ -58,15 +58,18 @@ of Hash or Array of Object).
 There are a few other parameters which may be useful or necessary depending on
 your needs and data.
 
-    :header     An array of strings. Optional for Array mode. If provided, 
-                written as the first (header) line in the file.
-                Mandatory for hash or object modes. For hashes, the header
-                array is the keys to the hash. In object mode, the accessors
-                for the object attributes.
-                
-    :quote      Same rules as for the parser.
+    :header        An array of strings. Optional for Array mode. If provided,
+                   written as the first (header) line in the file.
+                   Mandatory for hash or object modes. For hashes, the header
+                   array is the keys to the hash. In object mode, the
+                   accessors for the object attributes.
 
-    :separator  Same rules as for the parser.
+    :quote-always  Always quote every field in the CSV, even if it would not
+                   normally be necessary.
+
+    :quote         Same rules as for the parser.
+
+    :separator     Same rules as for the parser.
 
 
 == License
