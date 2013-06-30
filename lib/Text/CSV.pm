@@ -195,3 +195,5 @@ sub check_ok ($quote, $separator) {
     return "Sorry, you can't use the same character for separator AND quote."
       if $quote eq $separator;
 }
+
+# vim:ft=perl6
