@@ -143,38 +143,31 @@ our sub csv-write-file (@csv, :$header, :$file,
     die "Must provide an output file name" unless $file.defined;
 
     my @header = $header.defined ?? @$header !! ();
-
     my $fh = open($file, :w) or die $!;
-
     my $first = @csv[0];
 
     if $first ~~ Array {
         if @header.elems {
             $fh.say(join ($separator), map { csv-quote($_) }, @header);
         } 
-  
         for @csv -> $line {
            $fh.say(join ($separator), map { csv-quote($_) }, @$line);
         }
     }
-
     elsif $first ~~ Hash {
         unless @header.elems {
             die "Can not guarantee order of columns if no header is provided";
         }
-
         $fh.say(join ($separator), map { csv-quote($_) }, @header);
-
         for @csv -> $line {
            $fh.say(join ($separator), map { csv-quote($_) }, %$line{@header});
         }
     }
-
     else {
-        die "You need to provide a header array of accessors" unless @header.elems;
-
+        unless @header.elems {
+            die "You need to provide a header array of accessors";
+		}
         $fh.say(join ($separator), map { csv-quote($_) }, @header);
-
         for @csv -> $object {
            $fh.say(join ($separator), map { csv-quote( $object."$_"() ) }, @header);
         }
