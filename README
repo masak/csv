@@ -64,7 +64,7 @@ your needs and data.
                    array is the keys to the hash. In object mode, the
                    accessors for the object attributes.
 
-    :quote-always  Always quote every field in the CSV, even if it would not
+    :always-quote  Always quote every field in the CSV, even if it would not
                    normally be necessary.
 
     :quote         Same rules as for the parser.
