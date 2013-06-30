@@ -166,7 +166,7 @@ our sub csv-write-file (@csv, :$header, :$file,
     else {
         unless @header.elems {
             die "You need to provide a header array of accessors";
-		}
+        }
         $fh.say(join ($separator), map { csv-quote($_) }, @header);
         for @csv -> $object {
            $fh.say(join ($separator), map { csv-quote( $object."$_"() ) }, @header);
