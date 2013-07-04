@@ -3,10 +3,11 @@ use Test;
 
 use Text::CSV;
 
-my $input = q[[[subject,predicate,object
-dog,bites,man
-child,gets,cake
-arthur,extracts,excalibur]]];
+my $input =
+qq[[[subject,predicate,object\n]]] ~
+qq[[[dog,bites,man\n]]] ~
+qq[[[child,gets,cake\n]]] ~
+q[[[arthur,extracts,excalibur]]];
 
 my @AoA = [<subject predicate object>],
           [<dog bites man>],
@@ -21,10 +22,7 @@ is_deeply Text::CSV.parse($input, :output<arrays>),
           @AoA,
           'with :output<arrays>, an AoA is returned, header included';
 
-# RAKUDO: We'd like to just be able to say @AoA[1..*], but that doesn't work
-#         right now. [perl #77078]
-my @last-of-AoA = @AoA;
-shift @last-of-AoA;
+my @last-of-AoA = @AoA[1..*];
 
 is_deeply Text::CSV.parse($input, :skip-header),
           @last-of-AoA,

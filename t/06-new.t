@@ -3,9 +3,7 @@ use Test;
 
 use Text::CSV;
 
-my $input = q[[[one,two
-three,four,excess
-five]]];
+my $input = qq[[[one,two\nthree,four,excess\nfive]]];
 
 my Text::CSV $parser .= new( :output<hashes>, :!strict );
 is_deeply $parser.parse($input),
