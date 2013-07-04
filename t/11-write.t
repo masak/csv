@@ -8,7 +8,7 @@ my $out = './t/test.csv';
 
 my $pretty =
 qq|subject,predicate,object\ndog,bites,man\n| ~
-qq|child,gets,cake\narthur,extracts,excalibur\n|;
+qq|child,gets,cake\narthur,extracts,excalibur|;
 
 my @pretty-header = <subject predicate object>;
 
@@ -16,7 +16,7 @@ my $ugly =
 qq|Name,Number,Sentence\nAble,1/2/2013,"It's got like, a comma"\n| ~
 qq|Baker,3.14e+0,"New\nLines,\nLots\tof\nNew Lines and \tTabs"\n| ~
 qq|Charlie,Nope,"Quoth the raven, ""Nevermore"""\n| ~
-qq|Davidovich,√2,Это русский\n|;
+qq|Davidovich,√2,Это русский|;
 
 my @ugly-header = <Name Number Sentence>;
 
@@ -111,13 +111,11 @@ is($ugly, slurp($out),
 
 my $just-checking =
 q|"1,2","\t\n",Don't do this
-"3,4,5",Hellooo Nurse!,"(Seriously, Don't)"
-|;
+"3,4,5",Hellooo Nurse!,"(Seriously, Don't)"|;
 
 my $insane =
 q|,1,,2,"\t\n"Don't do this
-,3,,4,,5,"Hellooo Nurse!",(Seriously,, Don't),
-|;
+,3,,4,,5,"Hellooo Nurse!",(Seriously,, Don't),|;
 
 my @csv = Text::CSV.parse($just-checking);
 
