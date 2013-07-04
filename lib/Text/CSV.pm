@@ -1,6 +1,6 @@
 #use Grammar::Tracer;
 grammar Text::CSV::File {
-    regex TOP { ^ <line>+ % "\n" <empty_line>*? $ }
+    regex TOP { ^ <line>+ % "\n" <empty_line>* $ }
     regex line { <value>+ % ',' }
     regex value {
         <before ','> | <pure_text>
@@ -194,7 +194,7 @@ our sub csv-write ( @csv, :$header = '', :$separator is copy = ',',
 our sub csv-write-file (@csv, :$file, *%_) is export {
     die "Must provide an output file name" unless $file.defined;
     my $fh = open($file, :w) or die $!;
-    $fh.say( csv-write( @csv, |%_ ) );
+    $fh.print( csv-write( @csv, |%_ ) );
     $fh.close or die $!;
 }
 
