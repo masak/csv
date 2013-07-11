@@ -3,9 +3,10 @@ use Test;
 
 use Text::CSV;
 
-my $input = q[[[one,line,four,words
-five,words,in,one,line
-only,three,words]]];
+my $input =
+qq[[[one,line,four,words\n]]] ~
+qq[[[five,words,in,one,line\n]]] ~
+q[[[only,three,words]]];
 
 lives_ok { Text::CSV.parse($input) },
          'varying numbers of fields parse OK';
