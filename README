@@ -8,8 +8,8 @@ Simple CSV (comma-separated values) format parser for Perl 6.
 
 Oh, and the C<parse> methods take the following named parameters:
 (Parameters without the postcircumfix parenthesis are booleans. Just include
-them to set them to True. Parameters with postcircumfix parenthesis expect to
-have a passed parameter... Yo Dawg...)
+them to set them to True. Parameters with postcircumfix parenthesis expect a
+parameter value.)
 
     :trim          Removes whitespace on both ends of each value.
 
