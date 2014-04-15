@@ -82,7 +82,7 @@ class Text::CSV {
         }
         $parser.parse($input)
             or die "Sorry, cannot parse";
-        my @lines = $<line>;
+        my @lines := $<line>;
         my @values = map {
             [map { extract_text($_, $quote, :$trim) }, .<value>]
         }, @lines;
