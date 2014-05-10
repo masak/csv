@@ -82,9 +82,9 @@ class Text::CSV {
         }
         $parser.parse($input)
             or die "Sorry, cannot parse";
-        my @lines = $<line>;
+        my @lines = $<line>.list;
         my @values = map {
-            [map { extract_text($_, $quote, :$trim) }, .<value>]
+            [map { extract_text($_, $quote, :$trim) }, .<value>.list]
         }, @lines;
         if $strict eq 'default' {
             $strict = !$output || $output !~~ 'arrays';
