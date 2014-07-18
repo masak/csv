@@ -184,7 +184,7 @@ our sub csv-write ( @csv, :$header = '', :$separator is copy = ',',
     }
 
     sub csv-quote ($str is copy = '') {
-        if $always_quote or $str ~~ m/ $quote | $separator | \r | \n / {
+        if $always_quote or $str ~~ / $quote | $separator | \r | \n / {
             $str = $quote ~ $str.subst($quote, $quote ~ $quote, :g) ~ $quote;
         }
         $str
